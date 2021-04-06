@@ -8,37 +8,34 @@ class TestOne(BaseCase):
     @pytest.mark.UI
     def test_login(self):
         self.login()
-        assert "Создайте рекламную кампанию" in self.driver.page_source
+        assert self.verification(basic_locators.MAIN)
 
     @pytest.mark.UI
     def test_logout(self):
         self.login()
         self.logout()
-        assert "Войти" in self.driver.page_source
+        assert self.verification(basic_locators.ENTER)
 
     @pytest.mark.UI
     def test_edit_contacts(self):
         self.login()
-        self.edit_contacts()
-        assert "Иван Иванов" in self.driver.page_source
+        edit_name = 'ANTON IVANOV'
+        self.edit_contacts(edit_name)
+        assert self.find(basic_locators.FIO).get_attribute('value') == edit_name
 
     @pytest.mark.parametrize(
-        'tabs',
+        'tabs, check_locator',
         [
             pytest.param(
-                basic_locators.BALANCE
+                basic_locators.BALANCE, basic_locators.SCORE
             ),
             pytest.param(
-                basic_locators.STATISTIC
+                basic_locators.STATISTIC, basic_locators.SUMMARY
             ),
         ]
     )
-
     @pytest.mark.UI
-    def test_click_on_tabs(self, tabs):
+    def test_click_on_tabs(self, tabs, check_locator):
         self.login()
-        self.click_on_tabs(tabs)
-        if tabs == basic_locators.BALANCE:
-            assert "Автопополнение" in self.driver.page_source
-        elif tabs == basic_locators.STATISTIC:
-            assert "Конструктор отчётов" in self.driver.page_source
+        self.click_on_tabs(tabs, check_locator)
+        assert self.verification(check_locator)

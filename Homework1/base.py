@@ -1,6 +1,6 @@
 import pytest
 import basic_locators
-from selenium.common.exceptions import StaleElementReferenceException
+from selenium.common.exceptions import StaleElementReferenceException, NoSuchElementException
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import time
@@ -39,24 +39,21 @@ class BaseCase:
         self.find(basic_locators.LOG_OUT).click()
         wait.until(EC.visibility_of_element_located(basic_locators.ENTER))
 
-    def edit_contacts(self):
+    def edit_contacts(self, edit_name):
         wait = WebDriverWait(self.driver, timeout=10)
         self.find(basic_locators.PROFILE).click()
         wait.until(EC.visibility_of_element_located(basic_locators.FIO))
         fio = self.find(basic_locators.FIO)
         fio.clear()
-        fio.send_keys('Иван Иванов')
+        fio.send_keys(edit_name)
         self.find(basic_locators.SAVE).click()
         self.driver.refresh()
         wait.until(EC.visibility_of_element_located(basic_locators.FIO))
 
-    def click_on_tabs(self, tabs):
+    def click_on_tabs(self, tabs, check_locator):
         wait = WebDriverWait(self.driver, timeout=10)
         self.find(tabs).click()
-        if tabs == basic_locators.BALANCE:
-            wait.until(EC.visibility_of_element_located(basic_locators.SCORE))
-        elif tabs == basic_locators.STATISTIC:
-            wait.until(EC.visibility_of_element_located(basic_locators.SUMMARY))
+        wait.until(EC.visibility_of_element_located(check_locator))
 
     def click(self, locator):
         for i in range(CLICK_RETRY):
@@ -70,3 +67,9 @@ class BaseCase:
                 if i == CLICK_RETRY - 1:
                     raise
 
+    def verification(self, locator):
+        try:
+            self.find(locator)
+        except NoSuchElementException:
+            return False
+        return True
