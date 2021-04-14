@@ -41,19 +41,9 @@ class BasePage(object):
                 if i == CLICK_RETRY - 1:
                     raise
 
-    def verification(self, locator):
+    def is_element_presented(self, locator):
         try:
             self.find(locator)
         except NoSuchElementException:
             return False
         return True
-
-    def login(self, user, password):
-        self.find(BasePageLocators.ENTER).click()
-        login = self.find(BasePageLocators.LOGIN)
-        login.clear()
-        login.send_keys(user)
-        password_field = self.find(BasePageLocators.PASSWORD)
-        password_field.clear()
-        password_field.send_keys(password)
-        self.find(BasePageLocators.LOG_IN).click()

@@ -1,12 +1,12 @@
 import allure
 from selenium.common.exceptions import TimeoutException
-from ui.pages.main_page import MainPage
+from ui.pages.base_page import BasePage
 from ui.locators.basic_locators import AudiencePageLocators
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 
 
-class AudiencePage(MainPage):
+class AudiencePage(BasePage):
     locators = AudiencePageLocators()
 
     def create_segment(self, name_segment):
@@ -26,7 +26,6 @@ class AudiencePage(MainPage):
             self.find(self.locators.CREATE_SEGMENT, timeout=10).is_displayed()
 
     def delete_segment(self, name_segment):
-        self.go_to_audience()
         with allure.step('Search created segment'):
             self.find(self.locators.INPUT_SEARCH_SEGMENT).send_keys(name_segment)
         SEGMENT_SEARCH = (By.XPATH, '//li[@title="'+name_segment+'"]')

@@ -1,11 +1,11 @@
 import allure
 
-from ui.pages.main_page import MainPage
+from ui.pages.base_page import BasePage
 from ui.locators.basic_locators import CampaignPageLocators
 from selenium.webdriver.common.by import By
 
 
-class CampaignPage(MainPage):
+class CampaignPage(BasePage):
     locators = CampaignPageLocators()
 
     def create_campaign(self, name, file):

@@ -1,12 +1,12 @@
 import os
 import allure
 import pytest
-import shutil
 from selenium import webdriver
 from selenium.webdriver import ChromeOptions
 from webdriver_manager.chrome import ChromeDriverManager
 from webdriver_manager.firefox import GeckoDriverManager
 from ui.pages.base_page import BasePage
+from ui.pages.login_page import LoginPage
 from ui.pages.main_page import MainPage
 from ui.pages.campaign_page import CampaignPage
 from ui.pages.audience_page import AudiencePage
@@ -36,11 +36,16 @@ def audience_page(driver):
     return AudiencePage(driver=driver)
 
 
+@pytest.fixture
+def login_page(driver):
+    return LoginPage(driver=driver)
+
+
 @pytest.fixture(scope="function")
 def auto(driver):
-    page = BasePage(driver)
+    page = LoginPage(driver)
     page.login(page.user, page.password)
-    return BasePage(page.driver)
+    return LoginPage(page.driver)
 
 
 def get_driver(browser_name, download_dir):

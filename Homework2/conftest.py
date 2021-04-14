@@ -1,5 +1,6 @@
 import logging
 import sys
+import shutil
 from ui.fixtures import *
 
 

@@ -2,11 +2,16 @@ from selenium.webdriver.common.by import By
 
 
 class BasePageLocators:
+    pass
+
+
+class LoginPageLocators(BasePageLocators):
     ENTER = (By.XPATH, "//*[contains(@class, 'responseHead-module-button')]")
     LOGIN = (By.XPATH, "//*[@name='email']")
     PASSWORD = (By.XPATH, "//*[@type='password']")
     LOG_IN = (By.XPATH, "//div[contains(@class,'authForm') and contains(text(), 'Войти')]")
-    INVALID_LOGIN_OR_PASSWORD = (By.XPATH, "//div[contains(@class,'formMsg_text') and contains(text(), 'Invalid login or password')]")
+    INVALID_LOGIN_OR_PASSWORD = (
+    By.XPATH, "//div[contains(@class,'formMsg_text') and contains(text(), 'Invalid login or password')]")
 
 
 class MainPageLocators(BasePageLocators):

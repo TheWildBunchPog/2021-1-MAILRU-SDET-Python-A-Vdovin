@@ -1,6 +1,7 @@
 import pytest
 from _pytest.fixtures import FixtureRequest
 from ui.pages.base_page import BasePage
+from ui.pages.login_page import LoginPage
 from ui.pages.main_page import MainPage
 from ui.pages.campaign_page import CampaignPage
 from ui.pages.audience_page import AudiencePage
@@ -18,6 +19,7 @@ class BaseCase:
         self.logger = logger
 
         self.base_page: BasePage = request.getfixturevalue('base_page')
+        self.login_page: LoginPage = request.getfixturevalue('login_page')
         self.main_page: MainPage = request.getfixturevalue('main_page')
         self.campaign_page: CampaignPage = request.getfixturevalue('campaign_page')
         self.audience_page: AudiencePage = request.getfixturevalue('audience_page')
