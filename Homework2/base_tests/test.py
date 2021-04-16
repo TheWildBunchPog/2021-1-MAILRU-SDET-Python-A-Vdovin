@@ -26,9 +26,8 @@ class TestOne(BaseCase):
     @pytest.mark.UI
     def test_create_campaign(self, auto):
         self.login_page = auto
-        self.main_page.go_to_campaigns()
         name_campaign = 'Test_campaign'
-        self.campaign_page.create_campaign(name_campaign, self.base_page.path_to_file)
+        self.main_page.go_to_campaigns().create_campaign(name_campaign, self.base_page.path_to_file)
         CHECKED_CAMPAIGN = (By.XPATH, f'//a[contains(@title,"{name_campaign}" )]/../label/input[@checked]')
         with allure.step('Find campaign on page'):
             assert self.base_page.is_element_presented(CHECKED_CAMPAIGN)
@@ -37,9 +36,8 @@ class TestOne(BaseCase):
     @pytest.mark.UI
     def test_create_segment(self, auto):
         self.login_page = auto
-        self.main_page.go_to_audience()
         name_segment = 'Test segment'
-        self.audience_page.create_segment(name_segment)
+        self.main_page.go_to_audience().create_segment(name_segment)
         CHECKED_SEGMENT = (By.XPATH, f'//a[@title="{name_segment}"]')
         with allure.step('Find segment on page'):
             assert self.base_page.is_element_presented(CHECKED_SEGMENT)
@@ -48,9 +46,8 @@ class TestOne(BaseCase):
     @pytest.mark.UI
     def test_delete_segment(self, auto):
         self.login_page = auto
-        self.main_page.go_to_audience()
         name_segment = 'Test delete segment'
-        self.audience_page.create_segment(name_segment)
+        self.main_page.go_to_audience().create_segment(name_segment)
         self.audience_page.delete_segment(name_segment)
         CHECKED_SEGMENT = (By.XPATH, f'//a[@title="{name_segment}"]')
         self.driver.refresh()
