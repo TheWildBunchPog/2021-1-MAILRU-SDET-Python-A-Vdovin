@@ -1,9 +1,7 @@
-import pytest
-import os
-import allure
 import logging
 import sys
 import shutil
+from ui.fixtures import *
 
 
 def pytest_addoption(parser):
