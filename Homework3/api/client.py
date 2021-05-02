@@ -1,5 +1,6 @@
 from urllib.parse import urljoin
 import requests
+from data.data_path import repo_root
 
 
 class ResponseStatusCodeException(Exception):
@@ -14,11 +15,11 @@ class ApiClient:
         self.login('kamabulletez@mail.ru', 'bibletump123')
 
     def _request(self, method, location, headers=None, data=None, expected_status=200, params=None, json=None,
-                 jsonify=True):
+                 jsonify=True, files=None):
 
         url = urljoin(self.base_url, location)
 
-        response = self.session.request(method, url, headers=headers, params=params, json=json, data=data)
+        response = self.session.request(method, url, headers=headers, params=params, json=json, data=data, files=files)
 
         if response.status_code != expected_status:
             raise ResponseStatusCodeException(f' Got {response.status_code} {response.reason} for URL "{url}"')
@@ -46,12 +47,25 @@ class ApiClient:
         location = 'https://target.my.com/csrf'
         return self._request('GET', location, jsonify=False)
 
+    def post_banners(self):
+        location = 'https://target.my.com/api/v2/content/static.json'
+
+        headers = {'X-CSRFToken': self.session.cookies['csrftoken']}
+
+        data = {"width": 240,
+                "height": 400}
+
+        files = {"file": open(repo_root("kekwait.jpg"), 'rb')}
+
+        response = self._request('POST', location, headers=headers, data=data, files=files)
+        return response['id']
+
     def post_create_campaign(self, name):
         location = 'https://target.my.com/api/v2/campaigns.json'
         data = {
             "age_restrictions": None,
             "autobidding_mode": "second_price_mean",
-            "banners": [{"content": {"image_240x400": {"id": 8678801}},
+            "banners": [{"content": {"image_240x400": {"id": self.post_banners()}},
                          "name": "",
                          "textblocks": {},
                          "urls": {"primary": {"id": 47176916}}
@@ -134,19 +148,13 @@ class ApiClient:
         response = self._request('POST', location, headers=headers, json=data)
         return response['id']
 
-    def get_check_campaign(self):
-        location = 'api/v2/campaigns.json?fields=id%2Cname%2Cdelivery%2Cprice%2Cbudget_limit%2Cbudget_limit_day%2' \
-                   'Cpads_ots_limits%2Ccreated%2Cissues%2Cprices%2Cstatus%2Cpackage_id%2Cinterface_read_only%2' \
-                   'Cobjective%2Cuser_id%2Ctargetings__split_audience%2Ctargetings__pads%2Cenable_utm%2Cutm%2' \
-                   'Cage_restrictions%2Cpackage_priced_event_type%2Cautobidding_mode&sorting=-id&limit=100' \
-                   '&offset=0&_status__in=active'
-        campaign_json_id = self._request('GET', location)
-        return [response['id'] for response in campaign_json_id['items']]
+    def get_all_campaign(self):
+        location = 'api/v2/campaigns.json?_status=active&limit=100'
+        return self._request('GET', location)
 
-    def get_check_segment(self):
+    def get_all_segment(self):
         location = 'api/v2/remarketing/segments.json'
-        segment_json_id = self._request('GET', location)
-        return [response['id'] for response in segment_json_id['items']]
+        return self._request('GET', location)
 
     def delete_campaign(self, id_campaign):
         location = f'api/v2/campaigns/{id_campaign}.json'
