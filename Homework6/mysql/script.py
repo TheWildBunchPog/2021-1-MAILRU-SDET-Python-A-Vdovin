@@ -1,7 +1,10 @@
+import os
 from collections import Counter
 
 
-path = open("access.log")
+repo_root = os.path.abspath(os.path.join(__file__, os.pardir, 'access.log'))
+
+path = open(repo_root)
 requests = path.readlines()
 for i, value in enumerate(requests):
     requests[i] = value.split()

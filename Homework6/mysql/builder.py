@@ -1,4 +1,4 @@
-from models import *
+from mysql.models import *
 
 
 class MySQLBuilder:
