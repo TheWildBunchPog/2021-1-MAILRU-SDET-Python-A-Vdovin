@@ -37,7 +37,7 @@ class HTTPSocketClient:
                 total_data.append(data.decode())
             else:
                 break
-
+        self.client.close()
         data = ''.join(total_data).splitlines()
         return json.loads(data[-1])
 
@@ -73,7 +73,7 @@ class HTTPSocketClient:
                 total_data.append(data.decode())
             else:
                 break
-
+        self.client.close()
         data = ''.join(total_data).splitlines()
         if len(data) != 0:
             return json.loads(data[-1])
@@ -94,7 +94,7 @@ class HTTPSocketClient:
                 total_data.append(data.decode())
             else:
                 break
-
+        self.client.close()
         data = ''.join(total_data).splitlines()
         if len(data) != 0:
             return json.loads(data[-1])

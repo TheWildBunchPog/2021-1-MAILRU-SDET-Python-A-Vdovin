@@ -24,6 +24,11 @@ def shutdown_app():
         terminate_func()
 
 
+def client():
+    sock = HTTPSocketClient(settings.MOCK_HOST, settings.MOCK_PORT)
+    return sock
+
+
 @app.route('/shutdown')
 def shutdown():
     shutdown_app()
@@ -32,9 +37,8 @@ def shutdown():
 
 @app.route('/')
 def mock_work():
-    sock = HTTPSocketClient(settings.MOCK_HOST, settings.MOCK_PORT)
     try:
-        mock_response = sock.get('/')
+        mock_response = client().get('/')
     except ConnectionRefusedError as e:
         return jsonify({"status": "fail"}), 500
     if mock_response['status'] == 'ok':
@@ -45,8 +49,7 @@ def mock_work():
 
 @app.route('/users/add', methods=["POST"])
 def add_user():
-    sock = HTTPSocketClient(settings.MOCK_HOST, settings.MOCK_PORT)
-    mock_response = sock.post('/', request.data.decode())
+    mock_response = client().post('/', request.data.decode())
     if mock_response['status'] == 'ok':
         return jsonify({"status": "ok"}), 200
     else:
@@ -55,8 +58,7 @@ def add_user():
 
 @app.route('/users/update', methods=["PUT"])
 def update_user():
-    sock = HTTPSocketClient(settings.MOCK_HOST, settings.MOCK_PORT)
-    mock_response = sock.put('/', request.data.decode())
+    mock_response = client().put('/', request.data.decode())
     if mock_response and mock_response['status'] == 'ok':
         return jsonify({"status": "ok"}), 200
     else:
@@ -65,8 +67,7 @@ def update_user():
 
 @app.route('/users/delete', methods=["DELETE"])
 def delete_user():
-    sock = HTTPSocketClient(settings.MOCK_HOST, settings.MOCK_PORT)
-    mock_response = sock.delete('/', request.data.decode())
+    mock_response = client().delete('/', request.data.decode())
     if mock_response and mock_response['status'] == 'ok':
         return jsonify({"status": "ok"}), 200
     else:
@@ -75,8 +76,7 @@ def delete_user():
 
 @app.route('/users', methods=["GET"])
 def get_users():
-    sock = HTTPSocketClient(settings.MOCK_HOST, settings.MOCK_PORT)
-    mock_response = sock.get('/users')
+    mock_response = client().get('/users')
     if mock_response:
         return jsonify(mock_response), 200
     else:
