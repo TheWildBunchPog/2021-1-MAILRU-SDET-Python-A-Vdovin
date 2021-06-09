@@ -1,6 +1,3 @@
-import os
-
-import requests
 from selenium import webdriver
 from webdriver_manager.chrome import ChromeDriverManager
 from api.client import ApiClient
@@ -32,8 +29,7 @@ def driver(config):
     selenoid = config['selenoid']
     if browser == 'chrome':
         if selenoid == 'False':
-            manager = ChromeDriverManager(version=version)
-            driver = webdriver.Chrome(executable_path=manager.install())
+            driver = webdriver.Chrome('/home/a-vdovin/chromedriver')
         else:
             url = 'http://application:8080'
             caps = {'browserName': browser,
