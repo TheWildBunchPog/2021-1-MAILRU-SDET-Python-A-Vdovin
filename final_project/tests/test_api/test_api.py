@@ -71,7 +71,7 @@ class TestApi(BaseCase):
         'username, password',
         [pytest.param('', 'passwordvalid'), pytest.param('loginvalid', ''), pytest.param('', '')]
                             )
-    @pytest.mark.UI
+    @pytest.mark.API
     @allure.feature('Api login')
     def test_negative_reg_empty_fields(self, username, password):
         """Проверка авторизации с пустым полями:
