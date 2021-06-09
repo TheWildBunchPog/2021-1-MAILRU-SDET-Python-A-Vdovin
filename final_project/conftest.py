@@ -30,7 +30,7 @@ def driver(config):
     if browser == 'chrome':
         if selenoid == 'False':
             manager = ChromeDriverManager(version=version)
-            driver = webdriver.Chrome(executable_path=manager.install(), chrome_options=chrome_options)
+            driver = webdriver.Chrome(executable_path=manager.install())
         else:
             url = 'http://application:8080'
             caps = {'browserName': browser,
