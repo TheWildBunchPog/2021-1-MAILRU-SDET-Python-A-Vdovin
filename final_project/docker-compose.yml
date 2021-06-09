@@ -1,0 +1,59 @@
+version: '2.1'
+
+networks:
+  my-network:
+    external: true
+
+services:
+  mysql:
+    networks:
+      - my-network
+    image: "percona:latest"
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: pass
+    volumes:
+      - /home/a-vdovin/github/2021-1-MAILRU-SDET-Python-A-Vdovin/final_project/mysql/init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "-uroot", "-ppass", "ping", "-h", "127.0.0.1"]
+      timeout: 10s
+      retries: 30
+
+
+  selenoid:
+    networks:
+      - my-network
+    image: aerokube/selenoid:latest-release
+    volumes:
+      - /home/a-vdovin/github/2021-1-MAILRU-SDET-Python-A-Vdovin/final_project/browsers.json:/etc/selenoid/browsers.json
+      - /var/run/docker.sock:/var/run/docker.sock
+    command: ["-conf", "/etc/selenoid/browsers.json","-container-network", "my-network"]
+    ports:
+      - "4444:4444"
+
+
+  mock_vk:
+    networks:
+      - my-network
+    build: .
+    ports:
+      - "5555:5555"
+
+
+  application:
+    networks:
+      - my-network
+    image: "myapp:latest"
+    command: /app/myapp --config=/config.py
+    volumes:
+      - /home/a-vdovin/github/2021-1-MAILRU-SDET-Python-A-Vdovin/final_project/config.py:/config.py
+    ports:
+      - "8080:8080"
+    depends_on:
+      mysql:
+        condition: service_healthy
+      mock_vk:
+        condition: service_started
+      selenoid:
+        condition: service_started
