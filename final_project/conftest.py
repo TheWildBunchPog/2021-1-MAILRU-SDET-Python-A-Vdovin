@@ -29,7 +29,8 @@ def driver(config):
     selenoid = config['selenoid']
     if browser == 'chrome':
         if selenoid == 'False':
-            driver = webdriver.Chrome('/home/a-vdovin/chromedriver')
+            manager = ChromeDriverManager(version=version)
+            driver = webdriver.Chrome(executable_path=manager.install(), chrome_options=chrome_options)
         else:
             url = 'http://application:8080'
             caps = {'browserName': browser,
