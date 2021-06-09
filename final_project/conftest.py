@@ -49,22 +49,6 @@ def driver(config):
     driver.quit()
 
 
-def pytest_configure(config):
-    if not hasattr(config, "workerinput"):
-        os.system('docker-compose up -d')
-        while True:
-            try:
-                requests.get('http://0.0.0.0:8080')
-                break
-            except requests.exceptions.ConnectionError:
-                pass
-
-
-def pytest_unconfigure(config):
-    if not hasattr(config, "workerinput"):
-        os.system('docker-compose down')
-
-
 @pytest.fixture(scope='function')
 def api_client():
     return ApiClient()
