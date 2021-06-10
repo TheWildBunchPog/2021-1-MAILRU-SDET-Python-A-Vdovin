@@ -139,6 +139,21 @@ class TestApi(BaseCase):
             assert response.status_code == 304
 
     @pytest.mark.API
+    @allure.feature('Api reg')
+    def test_reg_incorrect_password_length(self, new_user):
+        """Проверка слишком длинного значений поля password (корректная длина поля - [1;255]).
+           Ожидаемый результат: плохой запрос - статус код 400."""
+        with allure.step('Генерируем валидный логин и email'):
+            username = self.builder.login()
+            email = self.builder.email()
+        with allure.step('Генерируем невалидный пароль'):
+            password = '1' * 256
+        with allure.step('Регистрируемся с невалидными данными'):
+            response = self.client.registration(username, password, email)
+        with allure.step('Сверяем полученный статус код с ожидаемым'):
+            assert response.status_code == 400
+
+    @pytest.mark.API
     @allure.feature('Api delete')
     def test_delete_user(self, new_user):
         """Проверка удаления зарегестированного невошедшего пользователя.

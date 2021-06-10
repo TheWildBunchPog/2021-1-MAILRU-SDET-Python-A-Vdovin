@@ -20,7 +20,6 @@ class TestLoginForm(BaseCase):
            Ожидаемый результат - остаемся на странице авторизации."""
         with allure.step('Логинемся с невалидным логином или паролем'):
             self.login_page.login(username, password)
-        self.base_page.screenshot("screen_1")
         with allure.step('Пытаемся найти локатор ввода имени пользователя'):
             self.base_page.screenshot("screen_1")
             assert self.base_page.is_element_presented(self.login_page.locators.USERNAME_FIELD)
