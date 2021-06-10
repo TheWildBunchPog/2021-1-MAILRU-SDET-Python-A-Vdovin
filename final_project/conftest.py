@@ -1,3 +1,6 @@
+import os
+
+import requests
 from selenium import webdriver
 from webdriver_manager.chrome import ChromeDriverManager
 from api.client import ApiClient
@@ -57,3 +60,19 @@ def mysql_client():
     mysql_client.connect()
     yield mysql_client
     mysql_client.connection.close()
+
+
+def pytest_configure(config):
+    if not hasattr(config, "workinput"):
+        os.system('docker-compose up -d')
+        while True:
+            try:
+                requests.get('http://0.0.0.0:8080')
+                break
+            except requests.exceptions.ConnectionError:
+                pass
+
+
+def pytest_unconfigure(config):
+    if not hasattr(config, "workinput"):
+        os.system('docker-compose down')
