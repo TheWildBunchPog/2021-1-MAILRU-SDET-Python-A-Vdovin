@@ -1,6 +1,5 @@
 from selenium import webdriver
 from webdriver_manager.chrome import ChromeDriverManager
-from webdriver_manager.utils import ChromeType
 from api.client import ApiClient
 from mysql.client import MysqlClient
 from ui.fixtures import *
@@ -9,6 +8,7 @@ from ui.fixtures import *
 def pytest_addoption(parser):
     parser.addoption('--url', default='http://0.0.0.0:8080')
     parser.addoption('--browser', default='chrome')
+    parser.addoption('--browser_ver', default='latest')
     parser.addoption('--selenoid', default='False')
 
 
@@ -16,18 +16,21 @@ def pytest_addoption(parser):
 def config(request):
     url = request.config.getoption('--url')
     browser = request.config.getoption('--browser')
+    version = request.config.getoption('--browser_ver')
     selenoid = request.config.getoption('--selenoid')
-    return {'url': url, 'browser': browser, 'selenoid': selenoid}
+    return {'url': url, 'browser': browser, 'version': version, 'selenoid': selenoid}
 
 
 @pytest.fixture(scope='function')
 def driver(config):
     url = config['url']
     browser = config['browser']
+    version = config['version']
     selenoid = config['selenoid']
     if browser == 'chrome':
         if selenoid == 'False':
-            driver = webdriver.Chrome(ChromeDriverManager(chrome_type=ChromeType.CHROMIUM).install())
+            manager = ChromeDriverManager(version=version)
+            driver = webdriver.Chrome(executable_path=manager.install())
         else:
             url = 'http://application:8080'
             caps = {'browserName': browser,
